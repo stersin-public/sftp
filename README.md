@@ -11,17 +11,10 @@ This is an automated build linked with the [debian](https://hub.docker.com/_/deb
 # Usage
 
 - Define users as command arguments, STDIN or mounted in `/etc/sftp-users.conf`
-  (syntax: `user:pass[:e][:uid[:gid[:dir1[,dir2]...]]]...`).
+  (syntax: `user:pass[:e][:uid[:gid[:homedir]]]]...`).
   - Set UID/GID manually for your users if you want them to make changes to
     your mounted volumes with permissions matching your host filesystem.
-  - Add directory names at the end, if you want to create them and/or set user
-    ownership. Perfect when you just want a fast way to upload something without
-    mounting any directories, or you want to make sure a directory is owned by
-    a user (chown -R).
-- Mount volumes in user's home directory.
-  - The users are chrooted to their home directory, so you must mount the
-    volumes in separate directories inside the user's home directory
-    (/home/user/**mounted-directory**).
+  - Set user home dir.
 
 # Examples
 
@@ -29,10 +22,10 @@ This is an automated build linked with the [debian](https://hub.docker.com/_/deb
 ## Simplest docker run example
 
 ```
-docker run -p 22:22 -d atmoz/sftp foo:pass:::upload
+docker run -p 22:22 -d atmoz/sftp foo:pass:::/chrootpass
 ```
 
-User "foo" with password "pass" can login with sftp and upload files to a folder called "upload". No mounted directories or custom UID/GID. Later you can inspect the files and use `--volumes-from` to mount them somewhere else (or see next example).
+User "foo" with password "pass" can login with sftp being chrooted in /chrootpass. No mounted directories or custom UID/GID. Later you can inspect the files and use `--volumes-from` to mount them somewhere else (or see next example).
 
 ## Sharing a directory from your computer
 
